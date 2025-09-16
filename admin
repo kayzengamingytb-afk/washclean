@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wash Clean - Administration</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3B82F6',
+            secondary: '#1E40AF'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Login Form -->
+  <div id="loginForm" class="min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full mx-4">
+      <div class="text-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">🔐 Administration</h1>
+        <p class="text-gray-600 mt-2">Wash Clean - Accès réservé</p>
+      </div>
+      
+      <form id="adminLogin" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+          <input type="password" id="password" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+        </div>
+        
+        <button type="submit" class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-secondary transition-colors">
+          Se connecter
+        </button>
+      </form>
+      
+      <div class="mt-4 text-center">
+        <a href="wash_clean_one_page_rdv_devis_copier_coller (9).html" class="text-sm text-gray-500 hover:text-primary">
+          ← Retour au site
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="adminDashboard" class="hidden">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+      <div class="max-w-6xl mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">🔐 Administration Wash Clean</h1>
+            <p class="text-gray-600">Gestion des réservations</p>
+          </div>
+          <div class="flex space-x-4">
+            <button onclick="exportBookings()" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors">
+              📊 Exporter
+            </button>
+            <button onclick="clearAllBookings()" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors">
+              🗑️ Tout effacer
+            </button>
+            <button onclick="logout()" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors">
+              🚪 Déconnexion
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stats -->
+    <div class="max-w-6xl mx-auto px-4 py-6">
+      <div class="grid md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white p-4 rounded-lg shadow">
+          <div class="text-2xl font-bold text-primary" id="totalBookings">0</div>
+          <div class="text-sm text-gray-600">Total réservations</div>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow">
+          <div class="text-2xl font-bold text-green-500" id="todayBookings">0</div>
+          <div class="text-sm text-gray-600">Aujourd'hui</div>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow">
+          <div class="text-2xl font-bold text-blue-500" id="weekBookings">0</div>
+          <div class="text-sm text-gray-600">Cette semaine</div>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow">
+          <div class="text-2xl font-bold text-purple-500" id="monthBookings">0</div>
+          <div class="text-sm text-gray-600">Ce mois</div>
+        </div>
+      </div>
+
+      <!-- Filtres -->
+      <div class="bg-white p-4 rounded-lg shadow mb-6">
+        <div class="flex flex-wrap gap-4 items-center">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Filtrer par date</label>
+            <input type="date" id="filterDate" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+          </div>
+          <div class="flex space-x-2">
+            <button onclick="filterBookings('today')" class="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 transition-colors text-sm">
+              Aujourd'hui
+            </button>
+            <button onclick="filterBookings('week')" class="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600 transition-colors text-sm">
+              Cette semaine
+            </button>
+            <button onclick="filterBookings('all')" class="bg-gray-500 text-white px-3 py-2 rounded-md hover:bg-gray-600 transition-colors text-sm">
+              Toutes
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Liste des réservations -->
+      <div class="bg-white rounded-lg shadow">
+        <div class="p-4 border-b">
+          <h2 class="text-lg font-semibold">📋 Réservations</h2>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Heure</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Client</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Téléphone</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Service</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Prix</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="bookingsTable" class="divide-y divide-gray-200">
+              <!-- Les réservations seront chargées ici -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de détails -->
+  <div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold">Détails de la réservation</h3>
+        <button onclick="closeDetailsModal()" class="text-gray-500 hover:text-gray-700">
+          ✕
+        </button>
+      </div>
+      <div id="bookingDetails">
+        <!-- Les détails seront chargés ici -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ADMIN_PASSWORD = "Eliot!1000";
+    const STORAGE_KEY = 'washclean_bookings';
+
+    // Gestionnaire de réservations
+    class BookingManager {
+      loadBookings() {
+        const data = localStorage.getItem(STORAGE_KEY);
+        return data ? JSON.parse(data) : [];
+      }
+
+      saveBookings(bookings) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
+      }
+
+      deleteBooking(bookingId) {
+        const bookings = this.loadBookings();
+        const filtered = bookings.filter(booking => booking.id !== bookingId);
+        this.saveBookings(filtered);
+        return filtered;
+      }
+
+      clearAllBookings() {
+        this.saveBookings([]);
+      }
+    }
+
+    const bookingManager = new BookingManager();
+
+    // Authentification
+    function checkAuth() {
+      const isAuthenticated = sessionStorage.getItem('admin_authenticated') === 'true';
+      if (isAuthenticated) {
+        showDashboard();
+      } else {
+        showLogin();
+      }
+    }
+
+    function showLogin() {
+      document.getElementById('loginForm').classList.remove('hidden');
+      document.getElementById('adminDashboard').classList.add('hidden');
+    }
+
+    function showDashboard() {
+      document.getElementById('loginForm').classList.add('hidden');
+      document.getElementById('adminDashboard').classList.remove('hidden');
+      loadBookings();
+      updateStats();
+    }
+
+    function logout() {
+      sessionStorage.removeItem('admin_authenticated');
+      showLogin();
+    }
+
+    // Gestion de la connexion
+    document.getElementById('adminLogin').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const password = document.getElementById('password').value;
+      
+      if (password === ADMIN_PASSWORD) {
+        sessionStorage.setItem('admin_authenticated', 'true');
+        showDashboard();
+      } else {
+        alert('Mot de passe incorrect');
+      }
+    });
+
+    // Chargement des réservations
+    function loadBookings(filter = 'all') {
+      const bookings = bookingManager.loadBookings();
+      let filteredBookings = bookings;
+
+      const today = new Date();
+      const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
+      const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+      switch (filter) {
+        case 'today':
+          const todayStr = new Date().toISOString().split('T')[0];
+          filteredBookings = bookings.filter(booking => booking.date === todayStr);
+          break;
+        case 'week':
+          filteredBookings = bookings.filter(booking => new Date(booking.date) >= startOfWeek);
+          break;
+        case 'date':
+          const filterDate = document.getElementById('filterDate').value;
+          if (filterDate) {
+            filteredBookings = bookings.filter(booking => booking.date === filterDate);
+          }
+          break;
+      }
+
+      displayBookings(filteredBookings);
+    }
+
+    // Affichage des réservations
+    function displayBookings(bookings) {
+      const tbody = document.getElementById('bookingsTable');
+      tbody.innerHTML = '';
+
+      if (bookings.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-gray-500">Aucune réservation trouvée</td></tr>';
+        return;
+      }
+
+      // Trier par date et heure
+      bookings.sort((a, b) => {
+        const dateA = new Date(a.date + ' ' + a.slot);
+        const dateB = new Date(b.date + ' ' + b.slot);
+        return dateA - dateB;
+      });
+
+      bookings.forEach(booking => {
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-gray-50';
+        
+        row.innerHTML = `
+          <td class="px-4 py-3 text-sm">${new Date(booking.date).toLocaleDateString('fr-FR')}</td>
+          <td class="px-4 py-3 text-sm font-medium">${booking.slot}</td>
+          <td class="px-4 py-3 text-sm">${booking.name}</td>
+          <td class="px-4 py-3 text-sm">
+            <a href="tel:${booking.phone}" class="text-primary hover:underline">${booking.phone}</a>
+          </td>
+          <td class="px-4 py-3 text-sm">${booking.service}</td>
+          <td class="px-4 py-3 text-sm font-medium">${booking.price}</td>
+          <td class="px-4 py-3 text-sm">
+            <button onclick="viewDetails('${booking.id}')" class="text-blue-500 hover:text-blue-700 mr-2">👁️</button>
+            <button onclick="deleteBooking('${booking.id}')" class="text-red-500 hover:text-red-700">🗑️</button>
+          </td>
+        `;
+        
+        tbody.appendChild(row);
+      });
+    }
+
+    // Mise à jour des statistiques
+    function updateStats() {
+      const bookings = bookingManager.loadBookings();
+      const today = new Date().toISOString().split('T')[0];
+      const startOfWeek = new Date();
+      startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+
+      const todayBookings = bookings.filter(booking => booking.date === today).length;
+      const weekBookings = bookings.filter(booking => new Date(booking.date) >= startOfWeek).length;
+      const monthBookings = bookings.filter(booking => new Date(booking.date) >= startOfMonth).length;
+
+      document.getElementById('totalBookings').textContent = bookings.length;
+      document.getElementById('todayBookings').textContent = todayBookings;
+      document.getElementById('weekBookings').textContent = weekBookings;
+      document.getElementById('monthBookings').textContent = monthBookings;
+    }
+
+    // Filtrage
+    function filterBookings(type) {
+      if (type === 'date') {
+        loadBookings('date');
+      } else {
+        loadBookings(type);
+      }
+    }
+
+    // Événement pour le filtre par date
+    document.getElementById('filterDate').addEventListener('change', function() {
+      loadBookings('date');
+    });
+
+    // Voir les détails
+    function viewDetails(bookingId) {
+      const bookings = bookingManager.loadBookings();
+      const booking = bookings.find(b => b.id === bookingId);
+      
+      if (!booking) return;
+
+      const detailsHtml = `
+        <div class="space-y-4">
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="bg-gray-50 p-4 rounded-md">
+              <h4 class="font-semibold mb-2">👤 Informations client</h4>
+              <p><strong>Nom :</strong> ${booking.name}</p>
+              <p><strong>Téléphone :</strong> <a href="tel:${booking.phone}" class="text-primary">${booking.phone}</a></p>
+              <p><strong>Adresse :</strong> ${booking.address}</p>
+              <p><strong>Ville :</strong> ${booking.zip} ${booking.city}</p>
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-md">
+              <h4 class="font-semibold mb-2">🔧 Détails du service</h4>
+              <p><strong>Service :</strong> ${booking.service}</p>
+              ${booking.vehicle ? `<p><strong>Véhicule :</strong> ${booking.vehicle}</p>` : ''}
+              <p><strong>Prix :</strong> ${booking.price}</p>
+              <p><strong>Réservé le :</strong> ${new Date(booking.timestamp).toLocaleString('fr-FR')}</p>
+            </div>
+          </div>
+          
+          <div class="bg-gray-50 p-4 rounded-md">
+            <h4 class="font-semibold mb-2">📅 Rendez-vous</h4>
+            <p><strong>Date :</strong> ${new Date(booking.date).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            <p><strong>Heure :</strong> ${booking.slot}</p>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('bookingDetails').innerHTML = detailsHtml;
+      document.getElementById('detailsModal').classList.remove('hidden');
+    }
+
+    // Fermer la modal
+    function closeDetailsModal() {
+      document.getElementById('detailsModal').classList.add('hidden');
+    }
+
+    // Supprimer une réservation
+    function deleteBooking(bookingId) {
+      if (confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?')) {
+        bookingManager.deleteBooking(bookingId);
+        loadBookings();
+        updateStats();
+      }
+    }
+
+    // Exporter les réservations
+    function exportBookings() {
+      const bookings = bookingManager.loadBookings();
+      const csvContent = [
+        ['Date', 'Heure', 'Nom', 'Téléphone', 'Adresse', 'Ville', 'Code Postal', 'Service', 'Véhicule', 'Prix', 'Réservé le'],
+        ...bookings.map(booking => [
+          booking.date,
+          booking.slot,
+          booking.name,
+          booking.phone,
+          booking.address,
+          booking.city,
+          booking.zip,
+          booking.service,
+          booking.vehicle || '',
+          booking.price,
+          new Date(booking.timestamp).toLocaleString('fr-FR')
+        ])
+      ].map(row => row.join(',')).join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `reservations_washclean_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Effacer toutes les réservations
+    function clearAllBookings() {
+      if (confirm('Êtes-vous sûr de vouloir effacer TOUTES les réservations ? Cette action est irréversible !')) {
+        bookingManager.clearAllBookings();
+        loadBookings();
+        updateStats();
+        alert('Toutes les réservations ont été supprimées.');
+      }
+    }
+
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', function() {
+      checkAuth();
+    });
+  </script>
+</body>
+</html>
