@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wash Clean - Réservation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3B82F6',
+            secondary: '#1E40AF',
+            accent: '#06B6D4',
+            success: '#10B981',
+            warning: '#F59E0B'
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-in-out',
+            'slide-up': 'slideUp 0.3s ease-out',
+            'bounce-gentle': 'bounceGentle 0.6s ease-in-out',
+            'pulse-soft': 'pulseSoft 2s infinite'
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' }
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(10px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' }
+            },
+            bounceGentle: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-5px)' }
+            },
+            pulseSoft: {
+              '0%, 100%': { opacity: '1' },
+              '50%': { opacity: '0.8' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-primary to-secondary shadow-lg">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+      <div class="text-center animate-fade-in">
+        <h1 class="text-4xl font-bold text-white mb-2">🚗 Wash Clean</h1>
+        <p class="text-blue-100 text-lg">Lavage véhicule & Services à domicile</p>
+        <div class="mt-6">
+          <a href="admin.html" class="inline-flex items-center px-4 py-2 bg-white/20 text-white rounded-full hover:bg-white/30 transition-all duration-300 backdrop-blur-sm">
+            <span class="mr-2">🔐</span>
+            Administration
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
+    <div class="grid lg:grid-cols-2 gap-8">
+      
+      <!-- Formulaire de réservation -->
+      <div class="bg-white rounded-xl shadow-xl p-8 border border-gray-100 animate-slide-up">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center mr-4">
+            <span class="text-white text-xl">📅</span>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-900">Réserver un créneau</h2>
+        </div>
+        
+        <form id="bookingForm" class="space-y-4">
+          <!-- Informations client -->
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-gray-700">👤 Nom complet</label>
+              <input type="text" name="name" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
+            </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-gray-700">📱 Téléphone</label>
+              <input type="tel" name="phone" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-gray-700">🏠 Adresse</label>
+              <input type="text" name="address" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
+            </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-gray-700">🏙️ Ville</label>
+              <input type="text" name="city" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
+            </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-gray-700">📮 Code postal</label>
+              <input type="text" name="zip" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
+            </div>
+          </div>
+
+          <!-- Service -->
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-gray-700">🔧 Service demandé</label>
+            <select id="service" name="service" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
+              <optgroup label="🚗 Lavage véhicule">
+                <option value="ext_simple" data-price="25" data-duration="40">Extérieur Simple - 25€ (40min)</option>
+                <option value="ext_pro" data-price="50" data-duration="75">Extérieur Pro - 50€ (75min)</option>
+                <option value="int_simple" data-price="40" data-duration="60">Intérieur Simple - 40€ (60min)</option>
+                <option value="int_pro" data-price="70" data-duration="90">Intérieur Pro - 70€ (90min)</option>
+                <option value="complet_simple" data-price="65" data-duration="90">Complet Simple - 65€ (90min)</option>
+                <option value="complet_pro" data-price="110" data-duration="150">Complet Pro - 110€ (150min)</option>
+              </optgroup>
+              <optgroup label="🏠 Services à domicile">
+                <option value="windows" data-price="30" data-duration="30">Vitres maison - 30€ (30min)</option>
+                <option value="sofa" data-price="40" data-duration="45">Canapé tissu - 40€ (45min)</option>
+                <option value="mattress" data-price="30" data-duration="30">Matelas - 30€ (30min)</option>
+                <option value="carpet" data-price="0" data-duration="0">Tapis - Sur devis</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <!-- Type de véhicule (masqué par défaut) -->
+          <div id="vehicleType" class="hidden space-y-2">
+            <label class="block text-sm font-semibold text-gray-700">🚗 Type de véhicule</label>
+            <select name="vehicle" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
+              <option>Citadine</option>
+              <option>Berline</option>
+              <option>SUV</option>
+              <option>Utilitaire</option>
+              <option>Monospace</option>
+            </select>
+          </div>
+
+          <!-- Date -->
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-gray-700">📅 Date souhaitée</label>
+            <input type="date" id="dateInput" name="date" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
+          </div>
+
+          <!-- Créneaux -->
+          <div class="space-y-3">
+            <label class="block text-sm font-semibold text-gray-700">⏰ Créneau disponible (1h30)</label>
+            <div id="slots" class="grid grid-cols-2 gap-3">
+              <!-- Les créneaux seront générés ici -->
+            </div>
+            <input type="hidden" id="selectedSlot" name="slot">
+          </div>
+
+          <!-- Prix -->
+          <div class="bg-gradient-to-r from-primary/10 to-secondary/10 p-6 rounded-xl border-2 border-primary/20">
+            <div class="flex justify-between items-center">
+              <span class="text-lg font-semibold text-gray-700">💰 Total :</span>
+              <span id="totalPrice" class="text-3xl font-bold text-primary">25€</span>
+            </div>
+          </div>
+
+          <!-- Bouton de réservation -->
+          <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary text-white py-4 px-6 rounded-xl hover:from-secondary hover:to-primary transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+            ✨ Réserver ce créneau
+          </button>
+        </form>
+      </div>
+
+      <!-- Informations et contact -->
+      <div class="space-y-6">
+        <!-- Horaires -->
+        <div class="bg-white rounded-xl shadow-xl p-6 border border-gray-100 animate-slide-up" style="animation-delay: 0.1s">
+          <div class="flex items-center mb-4">
+            <div class="w-10 h-10 bg-gradient-to-r from-accent to-primary rounded-full flex items-center justify-center mr-3">
+              <span class="text-white text-lg">🕒</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">Horaires d'ouverture</h3>
+          </div>
+          <div class="space-y-3">
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+              <span class="font-medium text-gray-700">Lundi - Vendredi</span>
+              <span class="font-bold text-primary">8h00 - 18h00</span>
+            </div>
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+              <span class="font-medium text-gray-700">Samedi</span>
+              <span class="font-bold text-primary">8h00 - 16h00</span>
+            </div>
+            <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg">
+              <span class="font-medium text-gray-700">Dimanche</span>
+              <span class="font-bold text-red-500">Fermé</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact -->
+        <div class="bg-white rounded-xl shadow-xl p-6 border border-gray-100 animate-slide-up" style="animation-delay: 0.2s">
+          <div class="flex items-center mb-4">
+            <div class="w-10 h-10 bg-gradient-to-r from-success to-accent rounded-full flex items-center justify-center mr-3">
+              <span class="text-white text-lg">📞</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">Contact</h3>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-primary/5 transition-colors">
+              <span class="w-8 text-center">📱</span>
+              <span class="font-medium text-gray-700">06 12 34 56 78</span>
+            </div>
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-primary/5 transition-colors">
+              <span class="w-8 text-center">📧</span>
+              <span class="font-medium text-gray-700">contact@washclean.fr</span>
+            </div>
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-primary/5 transition-colors">
+              <span class="w-8 text-center">📍</span>
+              <span class="font-medium text-gray-700">Saint-Lô, Normandie</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Services -->
+        <div class="bg-white rounded-xl shadow-xl p-6 border border-gray-100 animate-slide-up" style="animation-delay: 0.3s">
+          <div class="flex items-center mb-4">
+            <div class="w-10 h-10 bg-gradient-to-r from-warning to-success rounded-full flex items-center justify-center mr-3">
+              <span class="text-white text-lg">✨</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">Nos services</h3>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-primary/5 transition-colors">
+              <span class="w-8 text-center">🚗</span>
+              <span class="font-medium text-gray-700">Lavage véhicule complet</span>
+            </div>
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-primary/5 transition-colors">
+              <span class="w-8 text-center">🏠</span>
+              <span class="font-medium text-gray-700">Services à domicile</span>
+            </div>
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-primary/5 transition-colors">
+              <span class="w-8 text-center">💧</span>
+              <span class="font-medium text-gray-700">Produits écologiques</span>
+            </div>
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-primary/5 transition-colors">
+              <span class="w-8 text-center">⚡</span>
+              <span class="font-medium text-gray-700">Réservation en ligne</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gradient-to-r from-gray-800 to-gray-900 text-white py-12 mt-16">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <div class="mb-4">
+        <h3 class="text-2xl font-bold mb-2">🚗 Wash Clean</h3>
+        <p class="text-gray-300">Votre partenaire de confiance pour le lavage véhicule et les services à domicile</p>
+      </div>
+      <p class="text-gray-400">&copy; 2024 Wash Clean. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <!-- Modal de confirmation -->
+  <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl animate-bounce-gentle">
+      <div class="text-center">
+        <div class="w-20 h-20 bg-gradient-to-r from-success to-accent rounded-full flex items-center justify-center mx-auto mb-6">
+          <span class="text-white text-3xl">✅</span>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-3">Réservation confirmée !</h3>
+        <p class="text-gray-600 mb-6 leading-relaxed">Votre créneau a été réservé avec succès. Nous vous contacterons pour confirmer.</p>
+        <button onclick="closeModal()" class="bg-gradient-to-r from-primary to-secondary text-white px-8 py-3 rounded-xl hover:from-secondary hover:to-primary transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+          Parfait !
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Configuration des créneaux
+    const SLOT_CONFIG = {
+      startHour: 8,
+      endHour: 18,
+      slotDuration: 90, // 1h30 en minutes
+      lunchStart: 12,
+      lunchEnd: 13,
+      workingDays: [1, 2, 3, 4, 5, 6], // Lundi à Samedi
+      maxAdvanceDays: 30
+    };
+
+    // Gestionnaire de réservations
+    class BookingManager {
+      constructor() {
+        this.storageKey = 'washclean_bookings';
+      }
+
+      loadBookings() {
+        try {
+          const data = localStorage.getItem(this.storageKey);
+          if (!data) return [];
+          const parsed = JSON.parse(data);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          console.error('Erreur lors du chargement des réservations:', error);
+          return [];
+        }
+      }
+
+      saveBookings(bookings) {
+        localStorage.setItem(this.storageKey, JSON.stringify(bookings));
+      }
+
+      addBooking(booking) {
+        const bookings = this.loadBookings();
+        if (!Array.isArray(bookings)) {
+          this.saveBookings([booking]);
+        } else {
+          bookings.push(booking);
+          this.saveBookings(bookings);
+        }
+      }
+
+      getBookingsForDate(date) {
+        const bookings = this.loadBookings();
+        if (!Array.isArray(bookings)) {
+          return [];
+        }
+        return bookings.filter(booking => booking.date === date);
+      }
+    }
+
+    const bookingManager = new BookingManager();
+
+    // Génération des créneaux
+    function generateSlots(date) {
+      const slots = [];
+      const selectedDate = new Date(date + 'T00:00:00');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      // Vérifier si la date est valide
+      if (selectedDate < today) {
+        return slots;
+      }
+      
+      if (selectedDate.getDay() === 0) {
+        return slots; // Dimanche fermé
+      }
+      
+      const dayOfWeek = selectedDate.getDay();
+      if (!SLOT_CONFIG.workingDays.includes(dayOfWeek)) {
+        return slots;
+      }
+
+      // Générer des créneaux de 1h30
+      for (let hour = SLOT_CONFIG.startHour; hour < SLOT_CONFIG.endHour; hour += 1.5) {
+        // Pause déjeuner - vérifier si le créneau chevauche avec la pause
+        const slotStart = hour;
+        const slotEnd = hour + 1.5;
+        
+        // Si le créneau commence avant 12h et finit après 12h, ou commence avant 13h et finit après 13h
+        if ((slotStart < SLOT_CONFIG.lunchStart && slotEnd > SLOT_CONFIG.lunchStart) || 
+            (slotStart < SLOT_CONFIG.lunchEnd && slotEnd > SLOT_CONFIG.lunchEnd)) {
+          continue;
+        }
+        
+        const hourInt = Math.floor(hour);
+        const minute = (hour - hourInt) * 60;
+        const timeString = `${hourInt.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        slots.push(timeString);
+      }
+
+      return slots;
+    }
+
+    // Affichage des créneaux
+    function displaySlots(date) {
+      const slotsContainer = document.getElementById('slots');
+      const slots = generateSlots(date);
+      const existingBookings = bookingManager.getBookingsForDate(date);
+      const bookedSlots = existingBookings.map(booking => booking.slot);
+
+      slotsContainer.innerHTML = '';
+
+      if (slots.length === 0) {
+        slotsContainer.innerHTML = '<p class="text-gray-500 text-sm col-span-2">Aucun créneau disponible</p>';
+        return;
+      }
+
+      slots.forEach(slot => {
+        const isBooked = bookedSlots.includes(slot);
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `py-3 px-4 text-sm font-semibold rounded-xl transition-all duration-200 ${
+          isBooked 
+            ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-2 border-gray-200' 
+            : 'bg-white border-2 border-gray-200 hover:bg-gradient-to-r hover:from-primary hover:to-secondary hover:text-white hover:border-transparent hover:shadow-lg hover:-translate-y-1'
+        }`;
+        button.textContent = slot;
+        button.disabled = isBooked;
+        
+        if (isBooked) {
+          button.title = 'Créneau déjà réservé';
+        }
+        
+        if (!isBooked) {
+          button.addEventListener('click', () => selectSlot(slot));
+        }
+        
+        slotsContainer.appendChild(button);
+      });
+    }
+
+    // Sélection d'un créneau
+    function selectSlot(slot) {
+      // Désélectionner tous les créneaux
+      document.querySelectorAll('#slots button').forEach(btn => {
+        if (!btn.disabled) {
+          btn.classList.remove('bg-gradient-to-r', 'from-primary', 'to-secondary', 'text-white', 'border-transparent', 'shadow-lg', '-translate-y-1');
+          btn.classList.add('bg-white', 'border-2', 'border-gray-200');
+        }
+      });
+      
+      // Sélectionner le créneau cliqué
+      event.target.classList.remove('bg-white', 'border-2', 'border-gray-200');
+      event.target.classList.add('bg-gradient-to-r', 'from-primary', 'to-secondary', 'text-white', 'border-transparent', 'shadow-lg', '-translate-y-1');
+      
+      document.getElementById('selectedSlot').value = slot;
+    }
+
+    // Mise à jour du prix
+    function updatePrice() {
+      const serviceSelect = document.getElementById('service');
+      const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
+      const price = selectedOption.dataset.price || '0';
+      document.getElementById('totalPrice').textContent = price + '€';
+    }
+
+    // Affichage/masquage du type de véhicule
+    function toggleVehicleType() {
+      const serviceSelect = document.getElementById('service');
+      const vehicleTypeDiv = document.getElementById('vehicleType');
+      const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
+      const isVehicleService = selectedOption.closest('optgroup').label.includes('🚗');
+      
+      if (isVehicleService) {
+        vehicleTypeDiv.classList.remove('hidden');
+      } else {
+        vehicleTypeDiv.classList.add('hidden');
+      }
+    }
+
+    // Fermeture de la modal
+    function closeModal() {
+      document.getElementById('successModal').classList.add('hidden');
+    }
+
+    // Soumission du formulaire
+    function handleSubmit(event) {
+      event.preventDefault();
+      
+      const formData = new FormData(event.target);
+      const selectedSlot = document.getElementById('selectedSlot').value;
+      
+      if (!selectedSlot) {
+        alert('Veuillez sélectionner un créneau');
+        return;
+      }
+
+      const booking = {
+        id: Date.now().toString(),
+        name: formData.get('name'),
+        phone: formData.get('phone'),
+        address: formData.get('address'),
+        city: formData.get('city'),
+        zip: formData.get('zip'),
+        service: formData.get('service'),
+        vehicle: formData.get('vehicle') || '',
+        date: formData.get('date'),
+        slot: selectedSlot,
+        price: document.getElementById('totalPrice').textContent,
+        timestamp: new Date().toISOString()
+      };
+
+      bookingManager.addBooking(booking);
+      
+      // Afficher la modal de confirmation
+      document.getElementById('successModal').classList.remove('hidden');
+      
+      // Réinitialiser le formulaire
+      event.target.reset();
+      document.getElementById('selectedSlot').value = '';
+      updatePrice();
+      displaySlots(document.getElementById('dateInput').value);
+    }
+
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialiser la date
+      const today = new Date().toISOString().split('T')[0];
+      const dateInput = document.getElementById('dateInput');
+      dateInput.value = today;
+      dateInput.min = today;
+
+      // Événements
+      document.getElementById('service').addEventListener('change', function() {
+        updatePrice();
+        toggleVehicleType();
+      });
+
+      dateInput.addEventListener('change', function() {
+        displaySlots(this.value);
+      });
+
+      document.getElementById('bookingForm').addEventListener('submit', handleSubmit);
+
+      // Initialisation
+      updatePrice();
+      toggleVehicleType();
+      
+      // Charger les créneaux pour aujourd'hui
+      setTimeout(() => {
+        displaySlots(today);
+      }, 100);
+    });
+  </script>
+</body>
+</html>
